@@ -1,0 +1,2 @@
+# QuickApp
+Qt Quick App
