@@ -1,9 +1,14 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QQuickStyle>
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+
+    // 用 Fusion 而不是平台原生样式：LoginDialog 里给 TextField 自定义的
+    // background（红色错误边框）在原生 macOS 样式下会被忽略，Fusion 支持。
+    QQuickStyle::setStyle(QStringLiteral("Fusion"));
 
     QQmlApplicationEngine engine;
 

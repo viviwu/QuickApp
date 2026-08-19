@@ -7,6 +7,7 @@ set(CMAKE_AUTOMOC ON)
 
 find_package(Qt6 REQUIRED COMPONENTS Quick)
 find_package(Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt6 REQUIRED COMPONENTS QuickControls2)
 
 qt_standard_project_setup(REQUIRES 6.8)
 
@@ -16,6 +17,10 @@ qt_add_executable(QuickApp
     appcontroller.cpp
     authservice.h
     authservice.cpp
+    usagetracker.h
+    usagetracker.cpp
+    friendsmodel.h
+    friendsmodel.cpp
 )
 
 # qt_add_qml_module 把 .qml 文件和 C++ 端用 QML_ELEMENT/QML_SINGLETON 标记的类型
@@ -30,6 +35,7 @@ qt_add_qml_module(QuickApp
         qml/Main.qml
         qml/LoginDialog.qml
         qml/MainWindow.qml
+        qml/FriendDetail.qml
         # 只有大写开头的文件名才会被当成可导入的类型
 )
 
@@ -46,6 +52,7 @@ set_target_properties(QuickApp PROPERTIES
 
 target_link_libraries(QuickApp PRIVATE Qt6::Quick)
 target_link_libraries(QuickApp PRIVATE Qt6::Core)
+target_link_libraries(QuickApp PRIVATE Qt6::QuickControls2)
 
 include(GNUInstallDirs)
 install(TARGETS QuickApp

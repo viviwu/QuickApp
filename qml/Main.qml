@@ -4,8 +4,8 @@ import QuickApp
 
 Window {
     id: window
-    width: 360
-    height: 480
+    width: 480
+    height: 640
     visible: true
     title: "QuickApp"
 

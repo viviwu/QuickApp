@@ -10,6 +10,10 @@ AppController::AppController(QObject *parent)
     connect(&m_authService, &AuthService::loginSucceeded, this,
             [this](const QString &username) {
                 setBusy(false);
+                if (m_loginErrorCount != 0) {
+                    m_loginErrorCount = 0;
+                    emit loginErrorCountChanged();
+                }
                 setCurrentUser(username);
                 setLoggedIn(true);
             });
@@ -17,6 +21,8 @@ AppController::AppController(QObject *parent)
     connect(&m_authService, &AuthService::loginFailed, this,
             [this](const QString &reason) {
                 setBusy(false);
+                ++m_loginErrorCount;
+                emit loginErrorCountChanged();
                 emit loginFailed(reason);
             });
 }
