@@ -25,6 +25,9 @@ Window {
     // 整个 App 只有一个状态开关：AppController.loggedIn。
     // Loader 负责按这个开关在 LoginDialog / MainWindow 之间切换，
     // 两个页面互不知道对方存在，状态完全由 C++ 端的 AppController 驱动。
+    // 注意：切换 sourceComponent 会销毁旧实例，LoginDialog 每次都是新建的，
+    // 所以用户名这类"要记住"的状态由 C++ 端 AppController.lastUsername 保存，
+    // LoginDialog 在 onCompleted 里读回来回填。
     Loader {
         anchors.fill: parent
         sourceComponent: AppController.loggedIn ? mainWindowComponent : loginDialogComponent

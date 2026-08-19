@@ -14,6 +14,7 @@ AppController::AppController(QObject *parent)
                     m_loginErrorCount = 0;
                     emit loginErrorCountChanged();
                 }
+                setLastUsername(username);
                 setCurrentUser(username);
                 setLoggedIn(true);
             });
@@ -41,6 +42,14 @@ void AppController::logout()
 {
     setLoggedIn(false);
     setCurrentUser(QString());
+}
+
+void AppController::setLastUsername(const QString &username)
+{
+    if (m_lastUsername == username)
+        return;
+    m_lastUsername = username;
+    emit lastUsernameChanged();
 }
 
 void AppController::setBusy(bool busy)

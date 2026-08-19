@@ -23,7 +23,8 @@ class AppController : public QObject
     Q_PROPERTY(QString currentUser READ currentUser NOTIFY currentUserChanged)
     // 连续登录失败次数，LoginDialog 用 Label 显示，并触发红色闪烁提醒
     Q_PROPERTY(int loginErrorCount READ loginErrorCount NOTIFY loginErrorCountChanged)
-
+    // 上次登录成功的用户名，LoginDialog 重建时回填到输入框（"记住用户名"）
+    Q_PROPERTY(QString lastUsername READ lastUsername WRITE setLastUsername NOTIFY lastUsernameChanged)
 public:
     explicit AppController(QObject *parent = nullptr);
 
@@ -31,6 +32,8 @@ public:
     bool loggedIn() const { return m_loggedIn; }
     QString currentUser() const { return m_currentUser; }
     int loginErrorCount() const { return m_loginErrorCount; }
+    QString lastUsername() const { return m_lastUsername; }
+    void setLastUsername(const QString &username);
 
     // 供 LoginDialog 的登录按钮调用
     Q_INVOKABLE void login(const QString &username, const QString &password);
@@ -48,6 +51,7 @@ signals:
     void loggedInChanged();
     void currentUserChanged();
     void loginErrorCountChanged();
+    void lastUsernameChanged();
 
 private:
     void setBusy(bool busy);
@@ -59,4 +63,5 @@ private:
     bool m_loggedIn = false;
     QString m_currentUser;
     int m_loginErrorCount = 0;
+    QString m_lastUsername;
 };

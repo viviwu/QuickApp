@@ -7,6 +7,13 @@ import QuickApp
 Item {
     id: root
 
+    // 这个页面每次从主界面退回时都会被重新创建（Loader 切换 sourceComponent），
+    // 用户名由 C++ 端 AppController.lastUsername 保存，创建时回填。
+    Component.onCompleted: {
+        if (AppController.lastUsername.length > 0)
+            usernameField.text = AppController.lastUsername
+    }
+
     Column {
         anchors.centerIn: parent
         spacing: 16
@@ -53,35 +60,24 @@ Item {
             Keys.onReturnPressed: loginButton.clicked()
         }
 
-        // 登录错误次数：登录失败时变红并闪烁 5 秒，之后回到黑色
+        // 登录错误次数：只在登录出错后出现，红色字体，5 秒后自动消失
         Label {
             id: errorCountLabel
             anchors.horizontalCenter: parent.horizontalCenter
             text: "登录错误次数：" + AppController.loginErrorCount
             font.pixelSize: 13
-            font.bold: false
-            color: "black"
+            font.bold: true
+            color: "#d32f2f"
+            visible: false
 
-            SequentialAnimation {
-                id: errorFlash
-                // 变红 300ms -> 保持红色 5s -> 回到黑色 300ms
-                ColorAnimation {
-                    target: errorCountLabel
-                    property: "color"
-                    to: "#d32f2f"
-                    duration: 300
-                }
-                PauseAnimation { duration: 5000 }
-                ColorAnimation {
-                    target: errorCountLabel
-                    property: "color"
-                    to: "black"
-                    duration: 300
-                }
+            Timer {
+                id: errorCountHideTimer
+                interval: 5000
+                onTriggered: errorCountLabel.visible = false
             }
         }
 
-        // 错误提示文本，登录失败时短暂显示
+        // 错误提示文本，登录失败时显示登录失败原因
         Text {
             id: errorText
             width: parent.width
@@ -89,25 +85,6 @@ Item {
             wrapMode: Text.WordWrap
             visible: text.length > 0
             text: ""
-
-            // 与错误次数同步变红闪烁，作为二次视觉提醒
-            SequentialAnimation {
-                id: errorTextFlash
-                running: false
-                ColorAnimation {
-                    target: errorText
-                    property: "color"
-                    to: "#ff5252"
-                    duration: 300
-                }
-                PauseAnimation { duration: 5000 }
-                ColorAnimation {
-                    target: errorText
-                    property: "color"
-                    to: "#d32f2f"
-                    duration: 300
-                }
-            }
         }
 
         Button {
@@ -133,13 +110,8 @@ Item {
         function onLoginFailed(reason) {
             passwordField.text = ""
             errorText.text = reason
-            errorCountLabel.color = "#d32f2f"
-            if (errorFlash.running)
-                errorFlash.stop()
-            errorFlash.restart()
-            if (errorTextFlash.running)
-                errorTextFlash.stop()
-            errorTextFlash.restart()
+            errorCountLabel.visible = true
+            errorCountHideTimer.restart()
             passwordField.forceActiveFocus()
         }
     }
