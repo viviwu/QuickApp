@@ -15,6 +15,13 @@
 | `QDialog` / 模态框 | `Popup` / `Dialog` |
 | `QTimer` | `Timer` |
 | `connect(信号, 槽)` | 属性绑定 / `Connections` / `onXxx()` |
+| 循环 `new` 控件 + 手工排布 | `Repeater` + `GridLayout` / `Row` / `Column` |
+| 手动 `setVisible`/`setGeometry` 切状态 | `State` + `Transition`（声明式状态机）|
+| `dragEnterEvent`/`dropEvent` + `QMimeData` | `Drag` + `DropArea`（几行声明）|
+| `QPropertyAnimation`（C++ 里手工管理）| `on <属性> 动画` / `Behavior`（挂在属性旁）|
+| `QGraphicsDropShadowEffect` 等特效 | `MultiEffect`（Qt 6.5+，GPU shader）|
+| `QSettings` 持久化 | `QtCore.Settings`（QML 端 `import QtCore`）|
+| 继承 `QWidget` 做自定义控件 | `.qml` 组件文件：property + signal + `default property` |
 
 ### 关键心法（和写 Widgets 最大的不同）
 
@@ -29,6 +36,25 @@
 - **登录失败反馈**：错误次数自增，仅出错时红字显示、5 秒后消失（`Timer`）
 - **使用时长 & 休息提醒**：`UsageTracker` 计时，每 5 分钟发 `restReminderTriggered` 事件，主界面弹 `Popup` 提醒
 - **好友列表 & 详情页**：`ListView` 展示好友，点击行 `StackView` push 进详情页
+- **QML 技巧实验室**（`TechniquesLab.qml`，主界面右上角进入）：面向 QtWidgets 开发者的 7 个对照实验 + 1 个内嵌组件化示例，见下文
+
+### QML 技巧实验室（7 个实验）
+
+| # | 主题 | 对照 QtWidgets 的写法 | 关键 QML 概念 |
+|---|---|---|---|
+| 1 | 属性绑定 vs 命令式赋值 | `connect`/`setValue` 思路 | 声明式绑定、JS 里 `=` 会**破坏**绑定、`Qt.binding()` 恢复 |
+| 2 | `State` + `Transition` | 手动 `setVisible`/`setGeometry` + 动画 | 状态机、`transitions` 动画过渡 |
+| 3 | `Repeater` + `GridLayout` | `for` 循环 `new` 控件 | JS 数组当 model、delegate 模板克隆、`modelData` |
+| 4 | 纯 QML `ListModel` | 临时容器 + 手动刷新 | `append`/`remove` 自动刷新 UI |
+| 5 | `Drag` + `DropArea` | `dragEnterEvent`/`dropEvent` | `Drag.mimeData`、`onEntered/onExited/onDropped` |
+| 6 | `Timer` + 属性动画 | `QTimer` / `QPropertyAnimation` | `SequentialAnimation on scale`、`loops: Infinite` |
+| 7 | `MultiEffect` | `QGraphicsDropShadowEffect` | GPU shader 特效：阴影/模糊/变色 |
+
+附加彩蛋：
+- 页面顶部 `Settings`（`import QtCore`）持久化"选中色"，重启 App 仍记住（等价 `QSettings`）
+- `Shortcut` 绑定 Esc 返回（等价 `QShortcut`）
+- `Flickable` 可滚动页面（等价 `QScrollArea`）
+- `SectionCard.qml` 演示 QML 自定义组件的 `default property alias`（把子元素直接塞进组件）
 
 ## 架构：Qt Quick UI + C++ 业务/数据层
 
@@ -97,6 +123,10 @@ usagetracker.{h,cpp}     // 使用时长计时 + 休息提醒事件
 friendsmodel.{h,cpp}     // 好友列表数据模型（QAbstractListModel）
 qml/Main.qml             // 窗口 + Loader 状态切换（登录/主界面尺寸不同）
 qml/LoginDialog.qml      // 邮箱校验 + 错误提示
-qml/MainWindow.qml       // StackView + 好友列表 + 休息提醒
-qml/FriendDetail.qml     // 好友详情页（RowLayout/ColumnLayout）
+qml/MainWindow.qml       // StackView + 好友列表 + 休息提醒 + 实验室入口
+qml/FriendDetail.qml     // 好友详情页（复用 Avatar / StatCard 组件）
+qml/Avatar.qml           // 自定义组件：圆形头像（首字 + 在线圆点 + clicked 信号）
+qml/StatCard.qml         // 自定义组件：统计卡片（详情页三张卡复用）
+qml/SectionCard.qml      // 自定义组件：标题+说明+内容卡片（default property alias 演示）
+qml/TechniquesLab.qml    // QML 技巧实验室（7 个 QtWidgets→QML 对照实验）
 ```

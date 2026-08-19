@@ -6,6 +6,12 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
 
+    // 设置组织名/应用名：QML 端的 Settings（见 TechniquesLab.qml）和 C++ 的
+    // QSettings 都要靠这两个名字定位持久化文件的存放位置。
+    // 没设置的话会落到一个基于可执行文件名的默认位置，位置不固定、不推荐。
+    app.setOrganizationName(QStringLiteral("QuickApp"));
+    app.setApplicationName(QStringLiteral("QuickApp"));
+
     // 用 Fusion 而不是平台原生样式：LoginDialog 里给 TextField 自定义的
     // background（红色错误边框）在原生 macOS 样式下会被忽略，Fusion 支持。
     QQuickStyle::setStyle(QStringLiteral("Fusion"));

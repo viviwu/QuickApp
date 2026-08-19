@@ -36,24 +36,17 @@ Item {
             }
         }
 
-        // 头部：头像 + 名字/状态，演示 RowLayout + ColumnLayout 嵌套
+        // 头部：头像 + 名字/状态。
+        // 复用 Avatar 组件（和列表页同一份代码），用属性定制尺寸/状态。
         RowLayout {
             Layout.fillWidth: true
             spacing: 16
 
-            Rectangle {
-                Layout.preferredWidth: 64
-                Layout.preferredHeight: 64
-                radius: 32
-                color: root.friendAvatarColor
-
-                Text {
-                    anchors.centerIn: parent
-                    text: root.friendName.length ? root.friendName.charAt(0) : "?"
-                    color: "white"
-                    font.pixelSize: 28
-                    font.bold: true
-                }
+            Avatar {
+                name: root.friendName
+                bgColor: root.friendAvatarColor
+                status: root.friendStatus
+                size: 64
             }
 
             ColumnLayout {
@@ -74,95 +67,14 @@ Item {
             }
         }
 
-        // 三个并排统计卡片：演示 RowLayout 均分约束（Layout.fillWidth + Layout.columnStretch）
+        // 三个并排统计卡片：复用 StatCard 组件，只传标题/数值/强调色
         RowLayout {
             Layout.fillWidth: true
             spacing: 12
 
-            Rectangle {
-                id: statCard
-                Layout.fillWidth: true
-                Layout.preferredHeight: 72
-                radius: 8
-                color: "#f5f7fa"
-                border.color: "#e3e7ec"
-
-                ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: 4
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "动态"
-                        font.pixelSize: 12
-                        color: "#888888"
-                    }
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "12"
-                        font.pixelSize: 18
-                        font.bold: true
-                        color: "#333333"
-                    }
-                }
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 72
-                radius: 8
-                color: "#f5f7fa"
-                border.color: "#e3e7ec"
-
-                ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: 4
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "点赞"
-                        font.pixelSize: 12
-                        color: "#888888"
-                    }
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "86"
-                        font.pixelSize: 18
-                        font.bold: true
-                        color: "#333333"
-                    }
-                }
-            }
-
-            Rectangle {
-                Layout.fillWidth: true
-                Layout.preferredHeight: 72
-                radius: 8
-                color: "#f5f7fa"
-                border.color: "#e3e7ec"
-
-                ColumnLayout {
-                    anchors.centerIn: parent
-                    spacing: 4
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "收藏"
-                        font.pixelSize: 12
-                        color: "#888888"
-                    }
-
-                    Text {
-                        Layout.alignment: Qt.AlignHCenter
-                        text: "3"
-                        font.pixelSize: 18
-                        font.bold: true
-                        color: "#333333"
-                    }
-                }
-            }
+            StatCard { title: "动态"; value: "12" }
+            StatCard { title: "点赞"; value: "86" }
+            StatCard { title: "收藏"; value: "3"; accent: "#e57373" }
         }
 
         // 关于我（bio）

@@ -36,6 +36,10 @@ qt_add_qml_module(QuickApp
         qml/LoginDialog.qml
         qml/MainWindow.qml
         qml/FriendDetail.qml
+        qml/Avatar.qml
+        qml/StatCard.qml
+        qml/SectionCard.qml
+        qml/TechniquesLab.qml
         # 只有大写开头的文件名才会被当成可导入的类型
 )
 

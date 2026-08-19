@@ -46,6 +46,11 @@ Item {
                     }
 
                     Button {
+                        text: "QML 技巧实验室"
+                        onClicked: stackView.push("TechniquesLab.qml")
+                    }
+
+                    Button {
                         text: "退出登录"
                         onClicked: AppController.logout()
                     }
@@ -80,18 +85,20 @@ Item {
                             anchors.rightMargin: 12
                             spacing: 12
 
-                            Rectangle {
-                                width: 36
-                                height: 36
-                                radius: 18
-                                color: row.avatarColor
-
-                                Text {
-                                    anchors.centerIn: parent
-                                    text: row.name.length ? row.name.charAt(0) : "?"
-                                    color: "white"
-                                    font.bold: true
-                                }
+                            // 复用自定义组件 Avatar：
+                            // 组件封装了"圆形 + 首字 + 在线小圆点"，点按信号也由组件发出
+                            // （对应 Widgets 里自定义控件 + 自定义信号）。
+                            Avatar {
+                                name: row.name
+                                bgColor: row.avatarColor
+                                status: row.status
+                                size: 36
+                                onClicked: stackView.push("FriendDetail.qml", {
+                                    friendName: row.name,
+                                    friendStatus: row.status,
+                                    friendAvatarColor: row.avatarColor,
+                                    friendBio: row.bio,
+                                })
                             }
 
                             ColumnLayout {
@@ -117,16 +124,6 @@ Item {
                                 font.pixelSize: 22
                                 color: "#cccccc"
                             }
-                        }
-
-                        MouseArea {
-                            anchors.fill: parent
-                            onClicked: stackView.push("FriendDetail.qml", {
-                                friendName: row.name,
-                                friendStatus: row.status,
-                                friendAvatarColor: row.avatarColor,
-                                friendBio: row.bio,
-                            })
                         }
                     }
                 }
